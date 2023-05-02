@@ -33,13 +33,14 @@ summary(fit)
 Sfit.strata1 = survfit(fit, newdata = data.frame(race=c(1,2), gender=1))
 plot(Sfit.strata1, 
      xlab='time',ylab='survival rate',
-     main='Surv Rate of Patient at Age 60, from PH Model with Strata'
+     main='Surv Rate of male patients, from PH Model with Strata',
      col=c('blue','magenta'))
 legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
 
 Sfit.strata2 = survfit(fit, newdata = data.frame(race=c(1,2), gender=2))
 plot(Sfit.strata2, 
      xlab='time',ylab='survival rate',
+     main='Surv Rate of female patients, from PH Model with Strata',
      col=c('blue','magenta'))
 legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
 ```
