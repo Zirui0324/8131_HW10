@@ -7,8 +7,11 @@ output: html_document
 ```{r}
 library(survival)
 library(MASS)
+library(KMsurv)
+data(kidtran)
 ```
 
+### Question 1
 ```{r}
 # build data frame
 time = c(4, 12, 15, 21, 23,
@@ -21,6 +24,24 @@ df = data.frame(time, cens, group)
 # 
 survdiff(Surv(time, cens)~group, data = df)
 
+```
+### Question 2
+```{r}
+kidtran
+fit = coxph(Surv(time, delta)~race+strata(gender), data=kidtran, ties='breslow')
+summary(fit)
+Sfit.strata1 = survfit(fit, newdata = data.frame(race=c(1,2), gender=1))
+plot(Sfit.strata1, 
+     xlab='time',ylab='survival rate',
+     main='Surv Rate of Patient at Age 60, from PH Model with Strata'
+     col=c('blue','magenta'))
+legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
+
+Sfit.strata2 = survfit(fit, newdata = data.frame(race=c(1,2), gender=2))
+plot(Sfit.strata2, 
+     xlab='time',ylab='survival rate',
+     col=c('blue','magenta'))
+legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
 ```
 
 
