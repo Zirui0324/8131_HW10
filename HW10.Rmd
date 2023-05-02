@@ -1,0 +1,29 @@
+---
+title: "HW10"
+author: "Zirui Zhang"
+date: "2023-05-02"
+output: html_document
+---
+```{r}
+library(survival)
+library(MASS)
+```
+
+```{r}
+# build data frame
+time = c(4, 12, 15, 21, 23,
+         2, 6, 8, 10, 19)
+cens = c(0, 1, 0, 1, 0,
+         0, 1, 1, 0, 0)
+group = c(rep("group1", 5),
+          rep("group2", 5))
+df = data.frame(time, cens, group)
+# 
+survdiff(Surv(time, cens)~group, data = df)
+
+```
+
+
+
+
+
