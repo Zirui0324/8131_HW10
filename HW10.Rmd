@@ -2,7 +2,7 @@
 title: "HW10"
 author: "Zirui Zhang"
 date: "2023-05-02"
-output: html_document
+output: pdf_document
 ---
 ```{r message=FALSE}
 library(dplyr)
