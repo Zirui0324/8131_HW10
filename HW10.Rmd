@@ -40,6 +40,13 @@ plot(KM1, conf.int = F, mark.time = T,
      col = c("pink", "dark green"),
      cex.lab = 1.5, cex.main = 1.5)
 legend('topright', c("white", "black"), lty=1, col = c("pink", "dark green"))
+# log rank test
+survdiff(Surv(time, delta)~race, data = subset(kidtran, gender == 1))
+```
+
+Among males, White people showed higher survival rates than Black people on the first half of time and lower after. The p-value from log-rank test is 0.8>0.05, thus we fail to reject the null and conclude that there's no significant difference between the survival rates of the two races among male patients.
+
+```{r}
 # for female group
 KM2 = survfit(Surv(time, delta)~race, data = subset(kidtran, gender == 2), conf.type = "log")
 plot(KM2, conf.int = F, mark.time = T, 
@@ -47,7 +54,12 @@ plot(KM2, conf.int = F, mark.time = T,
      col = c("pink", "dark green"),
      cex.lab = 1.5, cex.main = 1.5)
 legend('topright', c("white", "black"), lty=1, col = c("pink", "dark green"))
+# log rank test
+survdiff(Surv(time, delta)~race, data = subset(kidtran, gender == 2))
 ```
+
+From the K-M plot we can see that White people have higher survival rates than Black people among females in most of the time.The p-value from log-rank test is 0.03<0.05, thus we reject the null and conclude that there exists significant difference between the survival rates of the two races among female patients.
+
 
 ### Question 3
 
