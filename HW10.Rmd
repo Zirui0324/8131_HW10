@@ -4,11 +4,12 @@ author: "Zirui Zhang"
 date: "2023-05-02"
 output: html_document
 ---
-```{r}
+```{r message=FALSE}
 library(dplyr)
 library(survival)
 library(MASS)
 library(KMsurv)
+library(survminer)
 ```
 
 ### Question 1
@@ -32,21 +33,20 @@ The p-value of the chi-sq test is 0.3>0.05, thus we fail to reject the null and 
 ```{r}
 data(kidtran)
 kidtran %>% head(10)
-fit = coxph(Surv(time, delta)~race+strata(gender), data=kidtran, ties='breslow')
-summary(fit)
-Sfit.strata1 = survfit(fit, newdata = data.frame(race=c(1,2), gender=1))
-plot(Sfit.strata1, 
-     xlab='time',ylab='survival rate',
-     main='Surv Rate of male patients, from PH Model with Strata',
-     col=c('blue','magenta'))
-legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
-
-Sfit.strata2 = survfit(fit, newdata = data.frame(race=c(1,2), gender=2))
-plot(Sfit.strata2, 
-     xlab='time',ylab='survival rate',
-     main='Surv Rate of female patients, from PH Model with Strata',
-     col=c('blue','magenta'))
-legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
+# for male group
+KM1 = survfit(Surv(time, delta)~race, data = subset(kidtran, gender == 1), conf.type = "log")
+plot(KM1, conf.int = F, mark.time = T, 
+     xlab = "Time", ylab = "Survival Probability", main = "Male K-M curve",
+     col = c("pink", "dark green"),
+     cex.lab = 1.5, cex.main = 1.5)
+legend('topright', c("white", "black"), lty=1, col = c("pink", "dark green"))
+# for female group
+KM2 = survfit(Surv(time, delta)~race, data = subset(kidtran, gender == 2), conf.type = "log")
+plot(KM2, conf.int = F, mark.time = T, 
+     xlab = "Time", ylab = "Survival Probability", main = "Female K-M curve",
+     col = c("pink", "dark green"),
+     cex.lab = 1.5, cex.main = 1.5)
+legend('topright', c("white", "black"), lty=1, col = c("pink", "dark green"))
 ```
 
 ### Question 3
