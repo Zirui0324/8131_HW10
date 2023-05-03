@@ -5,13 +5,14 @@ date: "2023-05-02"
 output: html_document
 ---
 ```{r}
+library(dplyr)
 library(survival)
 library(MASS)
 library(KMsurv)
-data(kidtran)
 ```
 
 ### Question 1
+
 ```{r}
 # build data frame
 time = c(4, 12, 15, 21, 23,
@@ -21,13 +22,16 @@ cens = c(0, 1, 0, 1, 0,
 group = c(rep("group1", 5),
           rep("group2", 5))
 df = data.frame(time, cens, group)
-# 
+# log-rank test
 survdiff(Surv(time, cens)~group, data = df)
-
 ```
+The p-value of the chi-sq test is 0.3>0.05, thus we fail to reject the null and conclude that there's no significant difference between the hazard function of the two groups.
+
 ### Question 2
+
 ```{r}
-kidtran
+data(kidtran)
+kidtran %>% head(10)
 fit = coxph(Surv(time, delta)~race+strata(gender), data=kidtran, ties='breslow')
 summary(fit)
 Sfit.strata1 = survfit(fit, newdata = data.frame(race=c(1,2), gender=1))
@@ -45,7 +49,27 @@ plot(Sfit.strata2,
 legend('topright',c('White', 'Black'),lty=1, col=c('blue','magenta'))
 ```
 
+### Question 3
 
+```{r}
+data(larynx)
+larynx %>% head(10)
+attach(larynx)
+Z1 = as.numeric(stage == 2)
+Z2 = as.numeric(stage == 3)
+Z3 = as.numeric(stage == 4)
+Z4 = age
+fit2 = coxph(Surv(time, delta)~Z1+Z2+Z3+Z4+Z1*Z4, data=larynx, method = 'breslow')
+summary(fit2)
+```
+- Explanation:
+
+Z1, Z3 and Z1*Z4 are significant variables. Holding the age, the HR between patients in stage II and patients in stage I is `r round(exp(fit2$coefficients[1]), 2)`, HR between patients in stage III and patients in stage I is `r round(exp(fit2$coefficients[2]), 2)`,HR between patients in stage IV and patients in stage I is `r round(exp(fit2$coefficients[3]), 2)`. When a patient is in stage I, one unit increase in age would increase the probability of death by `r scales::percent(round(exp(fit2$coefficients[4]), 4)-1)`.When a patient is in stage II, one unit increase in age would increse the probability of death by `r scales::percent(round(exp(fit2$coefficients[5]), 2)-1)`.
+
+
+- HR:
+
+For a stage II patient of age 50, Z1=1, Z4=50; for a stage I patient of age 50, Z1=0, Z4=50. The probability of death at given time t of the former is `r round(exp(fit2$coefficients[1]*1 + fit2$coefficients[5]*1*50 - 0), 2)` times the probability of death of the latter. 
 
 
 
